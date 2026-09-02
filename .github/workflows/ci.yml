@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Format lint
+        run: xcrun swift-format lint --recursive TartUI
+      - name: Build
+        run: xcodebuild -project TartUI.xcodeproj -scheme TartUI -configuration Debug -derivedDataPath .derived build CODE_SIGNING_ALLOWED=NO

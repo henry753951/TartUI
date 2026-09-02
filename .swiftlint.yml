@@ -1,0 +1,41 @@
+included:
+  - TartUI
+excluded:
+  - .derived
+  - DerivedData
+
+analyzer_rules:
+  - unused_declaration
+  - unused_import
+
+opt_in_rules:
+  - array_init
+  - closure_spacing
+  - contains_over_filter_count
+  - empty_count
+  - empty_string
+  - first_where
+  - force_unwrapping
+  - modifier_order
+  - sorted_imports
+
+disabled_rules:
+  - todo
+
+line_length:
+  warning: 120
+  ignores_comments: true
+  ignores_urls: true
+
+file_length:
+  warning: 450
+
+type_body_length:
+  warning: 350
+
+identifier_name:
+  min_length: 2
+  excluded:
+    - id
+    - os
+    - vm
