@@ -30,20 +30,26 @@ struct HostIntegrationService {
 
     func openSSHInTerminal(username: String, address: String) throws {
         let destination = username.isEmpty ? address : "\(username)@\(address)"
-        let command = "ssh " + shellQuoted(destination)
-        let appleScriptCommand =
-            command
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "\"", with: "\\\"")
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("TartUI-Terminal", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+
+        let scriptURL = directory.appendingPathComponent("ssh-\(UUID().uuidString).command")
         let script = """
-            tell application "Terminal"
-                activate
-                do script "\(appleScriptCommand)"
-            end tell
+            #!/bin/zsh
+            /bin/rm -f \(shellQuoted(scriptURL.path))
+            exec /usr/bin/ssh \(shellQuoted(destination))
             """
-        var error: NSDictionary?
-        NSAppleScript(source: script)?.executeAndReturnError(&error)
-        if let error { throw TartUIError.invalidResponse(error.description) }
+        try script.write(to: scriptURL, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes(
+            [.posixPermissions: 0o700],
+            ofItemAtPath: scriptURL.path
+        )
+
+        guard NSWorkspace.shared.open(scriptURL) else {
+            try? FileManager.default.removeItem(at: scriptURL)
+            throw TartUIError.invalidResponse(String(localized: "Terminal could not be opened."))
+        }
     }
 
     private func shellQuoted(_ value: String) -> String {

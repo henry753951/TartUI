@@ -1,6 +1,8 @@
 # TartUI
 
-TartUI is a native, open-source macOS interface for managing Tart images and virtual machines, created by [Henry753951](https://github.com/henry753951).
+TartUI is a small, native macOS app for viewing Tart images and managing local virtual machines.
+
+Some early interaction ideas were inspired by [TartDesk](https://github.com/mohnya-org/TartDesk).
 
 English · [繁體中文](README.zh-Hant.md)
 

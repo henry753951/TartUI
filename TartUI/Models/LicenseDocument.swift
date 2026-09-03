@@ -33,13 +33,5 @@ struct LicenseDocument: Identifiable, Hashable, Sendable {
             rawLicenseURL: URL(string: "https://raw.githubusercontent.com/cirruslabs/tart-guest-agent/main/LICENSE")!,
             projectURL: URL(string: "https://github.com/cirruslabs/tart-guest-agent")!
         ),
-        LicenseDocument(
-            id: "tartdesk",
-            name: "TartDesk",
-            owner: "mohnya-org",
-            licenseName: "MIT License",
-            rawLicenseURL: URL(string: "https://raw.githubusercontent.com/mohnya-org/TartDesk/main/LICENSE")!,
-            projectURL: URL(string: "https://github.com/mohnya-org/TartDesk")!
-        ),
     ]
 }

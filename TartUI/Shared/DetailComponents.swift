@@ -70,27 +70,34 @@ struct MetadataStrip: View {
 
 struct SectionPanel<Content: View>: View {
     let title: LocalizedStringKey
+    let systemName: String
     @ViewBuilder let content: Content
 
-    init(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) {
+    init(
+        _ title: LocalizedStringKey,
+        systemName: String,
+        @ViewBuilder content: () -> Content
+    ) {
         self.title = title
+        self.systemName = systemName
         self.content = content()
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: 18) {
+            Label(title, systemImage: systemName)
+                .font(.headline.weight(.semibold))
+                .symbolRenderingMode(.hierarchical)
             VStack(alignment: .leading, spacing: 12) {
                 content
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, 22)
-        .overlay(alignment: .bottom) {
-            Divider()
-        }
+        .padding(20)
+        .background(
+            Color.primary.opacity(0.035),
+            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+        )
     }
 }
 
@@ -124,7 +131,7 @@ struct InfoRow: View {
 struct InfoGrid: View {
     struct Item: Identifiable {
         let id = UUID()
-        let label: String
+        let label: LocalizedStringKey
         let value: String
     }
 

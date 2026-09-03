@@ -43,6 +43,25 @@ struct VMRuntimeInfo: Sendable {
     var memoryUsage: String?
     var networkInterfaces: String?
     var refreshedAt: Date = .now
+
+    var networkAddresses: [GuestNetworkAddress] {
+        networkInterfaces?
+            .split(whereSeparator: \.isNewline)
+            .compactMap { line in
+                let components = line.split(separator: ":", maxSplits: 1)
+                guard components.count == 2 else { return nil }
+                return GuestNetworkAddress(
+                    name: String(components[0]).trimmingCharacters(in: .whitespaces),
+                    address: String(components[1]).trimmingCharacters(in: .whitespaces)
+                )
+            } ?? []
+    }
+}
+
+struct GuestNetworkAddress: Identifiable, Sendable {
+    let id = UUID()
+    let name: String
+    let address: String
 }
 
 enum TartUIError: LocalizedError {

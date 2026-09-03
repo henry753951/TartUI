@@ -8,7 +8,7 @@ struct ImageDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 16) {
                 ResourceHeader(
                     systemName: "square.stack.3d.up.fill",
                     color: .blue,
@@ -35,7 +35,7 @@ struct ImageDetailView: View {
                     .init(systemName: "tag", value: image.version),
                 ])
 
-                SectionPanel("Image") {
+                SectionPanel("Image", systemName: "square.stack.3d.up") {
                     InfoRow("Registry", value: image.registry)
                     InfoRow("Repository", value: image.repository)
                     InfoRow("Version", value: image.version)
@@ -43,7 +43,7 @@ struct ImageDetailView: View {
                     InfoRow("Stored size", value: "\(image.sizeGB) GB")
                 }
 
-                SectionPanel("Reference") {
+                SectionPanel("Reference", systemName: "link") {
                     CodeWell(image.reference)
                 }
             }

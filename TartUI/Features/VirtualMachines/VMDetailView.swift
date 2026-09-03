@@ -8,7 +8,7 @@ struct VMDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 16) {
                 ResourceHeader(
                     systemName: "macwindow",
                     color: .primary,
@@ -21,6 +21,7 @@ struct VMDetailView: View {
                 MetadataStrip(items: metadataItems)
                 configurationSection
                 networkSection
+                remoteAccessSection
                 guestSection
                 storageSection
             }
@@ -46,9 +47,8 @@ struct VMDetailView: View {
                 } label: {
                     Image(systemName: "terminal")
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .buttonBorderShape(.circle)
-                .tint(.green)
                 .help("Open SSH in Terminal")
                 .disabled(model.sshCommand == nil)
             } else {
@@ -104,18 +104,18 @@ struct VMDetailView: View {
         [
             .init(
                 systemName: "internaldrive",
-                value: model.selectedVMDetails.map { "\($0.disk) GB disk" } ?? "—"
+                value: model.selectedVMDetails.map { String(localized: "\($0.disk) GB disk") } ?? "—"
             ),
             .init(
                 systemName: "externaldrive",
                 value: model.selectedVMHostInfo?.allocatedText ?? String(localized: "Calculating…")
             ),
-            .init(systemName: "server.rack", value: "Local"),
+            .init(systemName: "server.rack", value: String(localized: "Local")),
         ]
     }
 
     private var configurationSection: some View {
-        SectionPanel("Configuration") {
+        SectionPanel("Configuration", systemName: "slider.horizontal.3") {
             InfoGrid(items: configurationItems)
             if let macAddress = model.selectedVMConfiguration?.macAddress {
                 InfoRow("MAC address", value: macAddress, monospaced: true)
@@ -124,58 +124,65 @@ struct VMDetailView: View {
     }
 
     private var networkSection: some View {
-        SectionPanel("Network") {
+        SectionPanel("Network", systemName: "network") {
             if vm.running {
-                HStack {
-                    Picker("Resolver", selection: $model.ipResolver) {
-                        ForEach(IPResolver.allCases) { resolver in
-                            Text(resolver.title).tag(resolver)
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(alignment: .center, spacing: 16) {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("IP address")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text(model.runtimeInfo?.ipAddress ?? String(localized: "Unavailable"))
+                                .font(.system(.title3, design: .monospaced, weight: .medium))
+                                .textSelection(.enabled)
                         }
+                        Spacer(minLength: 12)
+                        Picker("Resolver", selection: $model.ipResolver) {
+                            ForEach(IPResolver.allCases) { resolver in
+                                Text(resolver.title).tag(resolver)
+                            }
+                        }
+                        .labelsHidden()
+                        .pickerStyle(.segmented)
+                        .frame(width: 220)
+                        Button {
+                            Task { await model.refreshRuntimeInformation(wait: 5) }
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.circle)
+                        .help("Refresh")
+                        .disabled(model.isRefreshingRuntime)
                     }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 300)
-                    Spacer()
-                    Button {
-                        Task { await model.refreshRuntimeInformation(wait: 5) }
-                    } label: {
-                        Label("Refresh", systemImage: "arrow.clockwise")
-                    }
-                    .disabled(model.isRefreshingRuntime)
-                }
-                .onChange(of: model.ipResolver) { _, _ in
-                    Task { await model.refreshRuntimeInformation(wait: 2) }
-                }
 
-                InfoRow(
-                    "IP address", value: model.runtimeInfo?.ipAddress ?? String(localized: "Unavailable"),
-                    monospaced: true)
-
-                if let interfaces = model.runtimeInfo?.networkInterfaces {
-                    VStack(alignment: .leading, spacing: 7) {
+                    if let addresses = model.runtimeInfo?.networkAddresses, !addresses.isEmpty {
+                        Divider()
                         Text("Guest interfaces")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text(interfaces)
-                            .font(.system(.body, design: .monospaced))
-                            .textSelection(.enabled)
+                        LazyVGrid(
+                            columns: [GridItem(.adaptive(minimum: 220), spacing: 12)],
+                            alignment: .leading,
+                            spacing: 10
+                        ) {
+                            ForEach(addresses) { item in
+                                HStack(spacing: 10) {
+                                    Text(item.name)
+                                        .font(.caption.weight(.medium))
+                                        .foregroundStyle(.secondary)
+                                        .frame(minWidth: 34, alignment: .leading)
+                                    Text(item.address)
+                                        .font(.system(.callout, design: .monospaced))
+                                        .lineLimit(1)
+                                        .textSelection(.enabled)
+                                }
+                            }
+                        }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-
-                HStack {
-                    TextField("Username", text: $model.sshUsername)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 150)
-                    Text(model.sshCommand ?? String(localized: "Waiting for an IP address"))
-                        .font(.system(.callout, design: .monospaced))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .textSelection(.enabled)
-                    Spacer()
-                    Button("Copy") { model.copySSHCommand() }
-                        .disabled(model.sshCommand == nil)
-                    Button("Open Terminal") { model.openSSH() }
-                        .disabled(model.sshCommand == nil)
+                .onChange(of: model.ipResolver) { _, _ in
+                    Task { await model.refreshRuntimeInformation(wait: 2) }
                 }
             } else {
                 UnavailableRow(
@@ -185,17 +192,51 @@ struct VMDetailView: View {
         }
     }
 
+    private var remoteAccessSection: some View {
+        SectionPanel("Remote Access", systemName: "terminal") {
+            if vm.running {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(alignment: .bottom, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Username")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            TextField("Username", text: $model.sshUsername)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 180)
+                        }
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("SSH command")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            CodeWell(model.sshCommand ?? String(localized: "Waiting for an IP address"))
+                        }
+                    }
+
+                    HStack {
+                        Text("Uses macOS Terminal and your existing OpenSSH trust settings.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Copy") { model.copySSHCommand() }
+                            .disabled(model.sshCommand == nil)
+                        Button("Open Terminal") { model.openSSH() }
+                            .disabled(model.sshCommand == nil)
+                    }
+                }
+            } else {
+                UnavailableRow(
+                    systemName: "terminal",
+                    text: "Start the virtual machine to connect with SSH.")
+            }
+        }
+    }
+
     private var guestSection: some View {
-        SectionPanel("Guest System") {
+        SectionPanel("Guest System", systemName: "cpu") {
             if vm.running, let runtime = model.runtimeInfo {
                 if runtime.guestAgentAvailable {
-                    InfoRow("Operating system", value: runtime.operatingSystem ?? String(localized: "Unknown"))
-                    InfoRow("Hostname", value: runtime.hostname ?? String(localized: "Unknown"))
-                    InfoRow("Kernel", value: runtime.kernel ?? String(localized: "Unknown"))
-                    InfoRow("Architecture", value: runtime.architecture ?? String(localized: "Unknown"))
-                    InfoRow("Uptime", value: runtime.uptime ?? String(localized: "Unknown"))
-                    InfoRow("Memory", value: runtime.memoryUsage ?? String(localized: "Unknown"))
-                    InfoRow("Root disk", value: runtime.diskUsage ?? String(localized: "Unknown"))
+                    InfoGrid(items: guestItems(runtime))
                 } else {
                     UnavailableRow(
                         systemName: "bolt.horizontal.circle",
@@ -212,7 +253,7 @@ struct VMDetailView: View {
     }
 
     private var storageSection: some View {
-        SectionPanel("Storage") {
+        SectionPanel("Storage", systemName: "internaldrive") {
             InfoRow("Reported size", value: "\(vm.sizeGB) GB")
             InfoRow(
                 "Host allocation", value: model.selectedVMHostInfo?.allocatedText ?? String(localized: "Calculating…"))
@@ -240,11 +281,23 @@ struct VMDetailView: View {
         return [
             .init(label: "Operating system", value: details?.osName ?? config?.os.capitalized ?? "—"),
             .init(label: "Architecture", value: config?.arch ?? "—"),
-            .init(label: "CPU", value: details.map { "\($0.cpu) cores" } ?? "—"),
+            .init(label: "CPU", value: details.map { String(localized: "\($0.cpu) cores") } ?? "—"),
             .init(label: "Memory", value: details?.memoryText ?? "—"),
             .init(label: "Display", value: details?.display ?? "—"),
             .init(label: "Virtual disk", value: details.map { "\($0.disk) GB" } ?? "—"),
             .init(label: "Disk format", value: details?.diskFormat?.uppercased() ?? "—"),
+        ]
+    }
+
+    private func guestItems(_ runtime: VMRuntimeInfo) -> [InfoGrid.Item] {
+        [
+            .init(label: "Operating system", value: runtime.operatingSystem ?? String(localized: "Unknown")),
+            .init(label: "Hostname", value: runtime.hostname ?? String(localized: "Unknown")),
+            .init(label: "Kernel", value: runtime.kernel ?? String(localized: "Unknown")),
+            .init(label: "Architecture", value: runtime.architecture ?? String(localized: "Unknown")),
+            .init(label: "Uptime", value: runtime.uptime ?? String(localized: "Unknown")),
+            .init(label: "Memory", value: runtime.memoryUsage ?? String(localized: "Unknown")),
+            .init(label: "Root disk", value: runtime.diskUsage ?? String(localized: "Unknown")),
         ]
     }
 }

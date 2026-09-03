@@ -2232,11 +2232,17 @@
     "License Unavailable" : {
       "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無法取得授權" } } }
     },
+    "Disk format" : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "磁碟格式" } } }
+    },
     "Licenses" : {
       "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "軟體授權" } } }
     },
     "Loading license…" : {
       "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "正在載入授權…" } } }
+    },
+    "Local" : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "本機" } } }
     },
     "Project" : {
       "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "專案" } } }
@@ -2264,6 +2270,27 @@
     },
     "Try Again" : {
       "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "再試一次" } } }
+    },
+    "%lld GB disk" : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "%lld GB 磁碟" } } }
+    },
+    "%lld cores" : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "%lld 核心" } } }
+    },
+    "Remote Access" : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "遠端連線" } } }
+    },
+    "SSH command" : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "SSH 指令" } } }
+    },
+    "Start the virtual machine to connect with SSH." : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟動虛擬機後即可使用 SSH 連線。" } } }
+    },
+    "Terminal could not be opened." : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無法開啟「終端機」。" } } }
+    },
+    "Uses macOS Terminal and your existing OpenSSH trust settings." : {
+      "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "使用 macOS「終端機」與現有的 OpenSSH 信任設定。" } } }
     },
     "View the project on GitHub" : {
       "localizations" : { "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "在 GitHub 查看專案" } } }

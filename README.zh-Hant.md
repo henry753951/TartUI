@@ -1,7 +1,8 @@
 # TartUI
 
-TartUI 是由 [Henry753951](https://github.com/henry753951) 開發的原生 macOS
-開源 App，用來管理 Tart 的 OCI 映像檔與本機虛擬機。
+TartUI 是一個小型的原生 macOS App，用來查看 Tart 映像檔並管理本機虛擬機。
+
+部分早期互動構想受到 [TartDesk](https://github.com/mohnya-org/TartDesk) 啟發。
 
 [English](README.md) · 繁體中文
 

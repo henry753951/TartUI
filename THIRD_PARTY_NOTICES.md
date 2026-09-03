@@ -20,15 +20,6 @@ their binaries or source code.
 The guest agent is optional and runs inside compatible virtual machines. TartUI
 can use it to obtain guest details when it is already available.
 
-## TartDesk
-
-- Project: [mohnya-org/TartDesk](https://github.com/mohnya-org/TartDesk)
-- License: MIT
-- License text: [TartDesk LICENSE](https://github.com/mohnya-org/TartDesk/blob/main/LICENSE)
-
-TartDesk was reviewed as a product and interaction-design reference. TartUI is
-an independent implementation and does not bundle TartDesk.
-
 ## Apple frameworks and SF Symbols
 
 TartUI uses system frameworks and SF Symbols supplied by Apple as part of macOS
