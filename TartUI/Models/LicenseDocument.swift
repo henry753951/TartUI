@@ -33,5 +33,13 @@ struct LicenseDocument: Identifiable, Hashable, Sendable {
             rawLicenseURL: URL(string: "https://raw.githubusercontent.com/cirruslabs/tart-guest-agent/main/LICENSE")!,
             projectURL: URL(string: "https://github.com/cirruslabs/tart-guest-agent")!
         ),
+        LicenseDocument(
+            id: "sparkle",
+            name: "Sparkle",
+            owner: "Sparkle contributors",
+            licenseName: "MIT License",
+            rawLicenseURL: URL(string: "https://raw.githubusercontent.com/sparkle-project/Sparkle/2.x/LICENSE")!,
+            projectURL: URL(string: "https://github.com/sparkle-project/Sparkle")!
+        ),
     ]
 }

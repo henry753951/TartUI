@@ -4,6 +4,16 @@
     "" : {
 
     },
+    "Check for Updates…" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢查更新⋯"
+          }
+        }
+      }
+    },
     ".tvm path" : {
       "localizations" : {
         "zh-Hant" : {

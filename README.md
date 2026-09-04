@@ -46,7 +46,14 @@ You can also open `TartUI.xcodeproj`, select the `TartUI` scheme, and run the ma
 
 The project uses Swift 6, SwiftUI, Observation, and an Apple String Catalog. Tart CLI execution, argument encoding, run-option persistence, and host integration live in `Services`; views do not execute Tart commands directly. Native `swift-format` is the required formatter and baseline linter. A SwiftLint configuration is also included for contributors who use it.
 
-The app is intentionally not sandboxed because it launches the locally installed Tart executable. Distribution should add an explicit signing and notarization configuration before release.
+The app is intentionally not sandboxed because it launches the locally installed Tart executable. Tag releases are currently ad-hoc signed; a Developer ID and notarization configuration can be added later for wider distribution.
+
+## Updates and releases
+
+TartUI uses Sparkle for signed in-app updates. Pushing a `v*` tag starts the
+release workflow, which builds the app, creates a DMG, generates a signed
+`appcast.xml`, and publishes both files to GitHub Releases. The repository must
+have a `SPARKLE_PRIVATE_KEY` Actions secret.
 
 ## Project structure
 

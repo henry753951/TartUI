@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct TartUIApp: App {
     @State private var model = TartAppModel()
+    @State private var updater = AppUpdater()
 
     private var verificationColorScheme: ColorScheme? {
         if CommandLine.arguments.contains("--force-light") { return .light }
@@ -24,6 +25,10 @@ struct TartUIApp: App {
         }
         .commands {
             CommandGroup(after: .appInfo) {
+                Button("Check for Updates…") {
+                    updater.checkForUpdates()
+                }
+                Divider()
                 Link("TartUI on GitHub", destination: URL(string: "https://github.com/henry753951/TartUI")!)
                 Link("Henry753951 on GitHub", destination: URL(string: "https://github.com/henry753951")!)
             }

@@ -1,0 +1,93 @@
+name: Release DMG
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-26
+    env:
+      APP_NAME: TartUI
+      PROJECT: TartUI.xcodeproj
+      SCHEME: TartUI
+      SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build app
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          xcodebuild \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -archivePath "$RUNNER_TEMP/$APP_NAME.xcarchive" \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/SourcePackages" \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            archive
+
+      - name: Create DMG
+        shell: bash
+        run: |
+          set -euo pipefail
+          STAGING="$RUNNER_TEMP/dmg"
+          mkdir -p "$STAGING"
+          ditto "$RUNNER_TEMP/$APP_NAME.xcarchive/Products/Applications/$APP_NAME.app" "$STAGING/$APP_NAME.app"
+          codesign --force --deep --sign - "$STAGING/$APP_NAME.app"
+          ln -s /Applications "$STAGING/Applications"
+          hdiutil create \
+            -volname "$APP_NAME" \
+            -srcfolder "$STAGING" \
+            -format UDZO \
+            -ov \
+            "$RUNNER_TEMP/TartUI.dmg"
+
+      - name: Generate signed Sparkle appcast
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SPARKLE_PRIVATE_KEY"
+          RELEASE_DIR="$RUNNER_TEMP/releases"
+          mkdir -p "$RELEASE_DIR"
+          cp "$RUNNER_TEMP/TartUI.dmg" "$RELEASE_DIR/"
+          printf '%s' "$SPARKLE_PRIVATE_KEY" | \
+            "$RUNNER_TEMP/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast" \
+              --ed-key-file - \
+              --download-url-prefix "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}" \
+              --link "https://github.com/${GITHUB_REPOSITORY}" \
+              -o "$RUNNER_TEMP/appcast.xml" \
+              "$RELEASE_DIR"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$RUNNER_TEMP/TartUI.dmg" "$RUNNER_TEMP/appcast.xml" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              "$RUNNER_TEMP/TartUI.dmg" \
+              "$RUNNER_TEMP/appcast.xml" \
+              --title "TartUI ${GITHUB_REF_NAME#v}" \
+              --generate-notes \
+              --verify-tag
+          fi

@@ -20,6 +20,15 @@ their binaries or source code.
 The guest agent is optional and runs inside compatible virtual machines. TartUI
 can use it to obtain guest details when it is already available.
 
+## Sparkle
+
+- Project: [sparkle-project/Sparkle](https://github.com/sparkle-project/Sparkle)
+- Copyright: Sparkle contributors
+- License: MIT License and bundled third-party notices
+- License text: [Sparkle LICENSE](https://github.com/sparkle-project/Sparkle/blob/2.x/LICENSE)
+
+Sparkle is bundled to provide signed in-app updates.
+
 ## Apple frameworks and SF Symbols
 
 TartUI uses system frameworks and SF Symbols supplied by Apple as part of macOS
