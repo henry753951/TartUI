@@ -14,8 +14,18 @@
 		AA0000000000000000000007 /* TartUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TartUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AA0000000000000000000083 /* Exceptions for "TartUI" folder in "TartUI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AA0000000000000000000020 /* TartUI */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AA0000000000000000000011 /* TartUI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TartUI; sourceTree = "<group>"; };
+		AA0000000000000000000011 /* TartUI */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (AA0000000000000000000083 /* Exceptions for "TartUI" folder in "TartUI" target */, ); explicitFileTypes = {}; explicitFolders = (); path = TartUI; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,13 +172,8 @@
 				CURRENT_PROJECT_VERSION = 3;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = TartUI;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				INFOPLIST_KEY_SUEnableAutomaticChecks = YES;
-				INFOPLIST_KEY_SUFeedURL = "https://github.com/henry753951/TartUI/releases/latest/download/appcast.xml";
-				INFOPLIST_KEY_SUPublicEDKey = "TG3dibdLR44TIZ8qOlScgUu9CBoKfF3oTPMmi6pPLoM=";
-				INFOPLIST_KEY_SUScheduledCheckInterval = 86400;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TartUI/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -191,13 +196,8 @@
 				CURRENT_PROJECT_VERSION = 3;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = TartUI;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				INFOPLIST_KEY_SUEnableAutomaticChecks = YES;
-				INFOPLIST_KEY_SUFeedURL = "https://github.com/henry753951/TartUI/releases/latest/download/appcast.xml";
-				INFOPLIST_KEY_SUPublicEDKey = "TG3dibdLR44TIZ8qOlScgUu9CBoKfF3oTPMmi6pPLoM=";
-				INFOPLIST_KEY_SUScheduledCheckInterval = 86400;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TartUI/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
