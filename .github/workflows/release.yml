@@ -73,7 +73,7 @@ jobs:
           printf '%s' "$SPARKLE_PRIVATE_KEY" | \
             "$RUNNER_TEMP/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast" \
               --ed-key-file - \
-              --download-url-prefix "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}" \
+              --download-url-prefix "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/" \
               --link "https://github.com/${GITHUB_REPOSITORY}" \
               -o "$RUNNER_TEMP/appcast.xml" \
               "$RELEASE_DIR"
